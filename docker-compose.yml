@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  tqqq-trading:
+    build: .
+    container_name: tqqq-trading-strategy
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONIOENCODING=utf-8
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
+    networks:
+      - trading-network
+    depends_on:
+      - ib-gateway
+    command: ["python", "ib_async/tqqq_final_trading.py"]
+
+  ib-gateway:
+    image: ghcr.io/UnusualAlpha/ib-gateway:latest
+    container_name: ib-gateway
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+      - IB_GATEWAY_PORT=4001
+      - IB_GATEWAY_HOST=0.0.0.0
+    ports:
+      - "4001:4001"
+      - "4002:4002"
+    volumes:
+      - ./ib-config:/opt/ib/config
+    networks:
+      - trading-network
+
+networks:
+  trading-network:
+    driver: bridge
+
+volumes:
+  logs:
+  config: 
