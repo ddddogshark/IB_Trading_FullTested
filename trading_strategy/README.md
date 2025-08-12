@@ -40,27 +40,32 @@
 - 同时输出到控制台和文件
 - 记录所有交易决策和结果
 
-## 使用方法
+## 快速开始
 
-### 1. 环境准备
+### 1. 环境要求
+- Python 3.10+
+- Interactive Brokers Gateway
+- 有效的IB账户
+
+### 2. 安装依赖
 ```bash
-# 激活虚拟环境
-venv\Scripts\activate
+# 方法1: 使用安装脚本（推荐）
+双击 安装依赖.bat
 
-# 确保依赖已安装
-pip install ib_async pandas numpy pytz
+# 方法2: 命令行安装
+pip install pandas numpy pytz ib_async
 ```
 
-### 2. 启动策略
+### 3. 启动策略
 ```bash
-# 方法1: 命令行启动
+# 方法1: 使用启动脚本（推荐）
+双击 启动策略.bat
+
+# 方法2: 命令行启动
 python tqqq_final_trading.py
-
-# 方法2: 双击启动脚本
-启动策略.bat
 ```
 
-### 3. 安全退出
+### 4. 安全退出
 - 按 `Ctrl+C` 安全退出程序
 - 程序会自动断开IB连接
 
@@ -98,15 +103,23 @@ strategy = TQQQSmartTradingStrategy(
 
 ### 常见问题
 
-1. **连接失败**
+1. **Python未找到**
+   - 确保Python已安装并添加到系统PATH
+   - 运行 `python --version` 检查Python版本
+
+2. **依赖包缺失**
+   - 运行 `安装依赖.bat` 安装所需依赖
+   - 或手动运行 `pip install pandas numpy pytz ib_async`
+
+3. **连接失败**
    - 检查IB Gateway是否运行
    - 确认端口和客户端ID配置正确
 
-2. **数据获取失败**
+4. **数据获取失败**
    - 检查网络连接
    - 确认IB账户有相应权限
 
-3. **时区问题**
+5. **时区问题**
    - 程序使用pytz处理时区
    - 自动处理夏令时
 
@@ -118,6 +131,7 @@ strategy = TQQQSmartTradingStrategy(
 - ✅ 使用EMA20技术指标
 - ✅ 改进日志记录
 - ✅ 添加安全退出机制
+- ✅ 简化安装和使用流程
 
 ### v1.0 (原版本)
 - 基于已知数据的简单策略
