@@ -131,8 +131,6 @@ dmypy.json
 # IB Trading specific
 *.log
 tqqq_trading.log
-*.bat
-启动策略.bat
 
 # IDE
 .vscode/
