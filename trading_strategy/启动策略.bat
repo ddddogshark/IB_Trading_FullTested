@@ -20,10 +20,16 @@ if errorlevel 1 (
 REM 检查依赖是否安装
 python -c "import pandas, numpy, pytz" 2>nul
 if errorlevel 1 (
-    echo 错误: 缺少必要的依赖包
-    echo 请运行: pip install pandas numpy pytz ib_async
-    pause
-    exit /b 1
+    echo 缺少必要的依赖包，正在安装...
+    echo.
+    pip install pandas numpy pytz ib_async
+    if errorlevel 1 (
+        echo 错误: 依赖安装失败
+        pause
+        exit /b 1
+    )
+    echo 依赖安装完成！
+    echo.
 )
 
 REM 启动策略

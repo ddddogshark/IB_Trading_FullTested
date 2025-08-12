@@ -5,6 +5,11 @@ TQQQ智能交易策略
 支持持续运行和定时检查
 """
 
+import sys
+import os
+# 添加上级目录到Python路径，以便导入ib_async
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -14,14 +19,13 @@ import time
 import pytz
 import threading
 import signal
-import sys
 
 # 配置日志
 logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('tqqq_trading.log'),
+        logging.FileHandler('tqqq_trading.log', encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

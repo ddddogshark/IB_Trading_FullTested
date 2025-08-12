@@ -47,21 +47,23 @@
 - Interactive Brokers Gateway
 - 有效的IB账户
 
-### 2. 安装依赖
+### 2. 一键启动
 ```bash
-# 方法1: 使用安装脚本（推荐）
-双击 安装依赖.bat
-
-# 方法2: 命令行安装
-pip install pandas numpy pytz ib_async
+# 双击运行启动脚本（推荐）
+启动策略.bat
 ```
 
-### 3. 启动策略
-```bash
-# 方法1: 使用启动脚本（推荐）
-双击 启动策略.bat
+启动脚本会自动：
+- 检查Python是否安装
+- 检查并安装所需依赖
+- 启动交易策略
 
-# 方法2: 命令行启动
+### 3. 手动启动
+```bash
+# 安装依赖
+pip install pandas numpy pytz ib_async
+
+# 启动策略
 python tqqq_final_trading.py
 ```
 
@@ -108,7 +110,7 @@ strategy = TQQQSmartTradingStrategy(
    - 运行 `python --version` 检查Python版本
 
 2. **依赖包缺失**
-   - 运行 `安装依赖.bat` 安装所需依赖
+   - 启动脚本会自动安装依赖
    - 或手动运行 `pip install pandas numpy pytz ib_async`
 
 3. **连接失败**
@@ -132,6 +134,7 @@ strategy = TQQQSmartTradingStrategy(
 - ✅ 改进日志记录
 - ✅ 添加安全退出机制
 - ✅ 简化安装和使用流程
+- ✅ 一键启动脚本（自动检查和安装依赖）
 
 ### v1.0 (原版本)
 - 基于已知数据的简单策略
