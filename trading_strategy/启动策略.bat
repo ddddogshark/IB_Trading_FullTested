@@ -9,11 +9,11 @@ echo 请确保IB Gateway已运行
 echo 按Ctrl+C可以安全退出
 echo.
 
-REM 激活虚拟环境
-call venv\Scripts\activate.bat
+REM 激活虚拟环境（使用绝对路径）
+call "%~dp0..\.venv\Scripts\activate.bat"
 
 REM 启动策略
-python tqqq_final_trading.py
+python "%~dp0tqqq_final_trading.py"
 
 echo.
 echo 策略已退出
