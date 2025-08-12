@@ -2,92 +2,82 @@
 
 这是一个基于Interactive Brokers API的TQQQ自动化交易策略项目，使用Python和ib_async库实现。
 
-## 项目概述
-
-本项目包含一个智能化的TQQQ交易策略，基于以下条件进行自动化交易：
-- TQQQ价格 > EMA20移动平均线
-- 定时检查（北京时间21:25）
-
-## 主要功能
-
-### 🚀 核心特性
-- **自动化交易**: 基于EMA20技术指标的智能交易决策
-- **持续运行**: 支持24/7持续运行模式
-- **定时检查**: 每天固定时间自动检查交易条件
-- **实时监控**: 实时获取市场数据和账户信息
-- **安全退出**: 支持Ctrl+C安全退出机制
-
-### 📊 交易策略
-- **买入条件**: TQQQ > EMA20
-- **仓位管理**: 每次买入账户资金的10%
-- **风险控制**: 自动计算股数，最小1股保护
-- **订单类型**: 市价单执行
-
 ## 项目结构
 
 ```
 IB_Trading/
-├── ib_async/                    # ib_async库源码
-│   ├── tqqq_final_trading.py   # 主要交易策略
+├── ib_async/                    # 原始ib_async库（第三方依赖）
+│   ├── ib_async/               # ib_async核心库文件
+│   ├── docs/                   # 库文档
+│   ├── examples/               # 示例代码
+│   ├── tests/                  # 测试文件
 │   └── ...
-├── .gitignore                  # Git忽略文件
-├── README.md                   # 项目说明（本文件）
-└── requirements.txt            # 依赖包列表
+├── trading_strategy/           # 🎯 您的交易策略（主要开发部分）
+│   ├── tqqq_final_trading.py  # 核心交易策略
+│   ├── 启动策略.bat           # Windows启动脚本
+│   └── README.md              # 策略详细说明
+├── .gitignore                 # Git忽略文件
+├── README.md                  # 项目说明（本文件）
+└── requirements.txt           # 依赖包列表
 ```
 
-## 安装和使用
+## 🎯 您的开发部分
 
-### 环境要求
+### 交易策略 (`trading_strategy/`)
+这是您自己开发的TQQQ智能交易策略，包含：
+
+- **核心策略**: `tqqq_final_trading.py` - 基于EMA20的自动化交易策略
+- **启动脚本**: `启动策略.bat` - Windows一键启动脚本
+- **详细文档**: `README.md` - 策略使用说明
+
+### 策略特点
+- **自动化交易**: 基于EMA20技术指标的智能交易决策
+- **持续运行**: 支持24/7持续运行模式
+- **定时检查**: 每天北京时间21:20自动检查交易条件
+- **实时监控**: 实时获取市场数据和账户信息
+- **安全退出**: 支持Ctrl+C安全退出机制
+
+## 📚 原始库部分
+
+### ib_async库 (`ib_async/`)
+这是第三方开源库，提供IB API的Python接口：
+
+- **核心功能**: IB API的Python封装
+- **文档**: 完整的API文档和示例
+- **示例代码**: 各种使用示例
+- **测试**: 单元测试和集成测试
+
+## 快速开始
+
+### 1. 查看您的策略
+```bash
+# 进入策略目录
+cd trading_strategy
+
+# 查看策略说明
+cat README.md
+
+# 运行策略
+python tqqq_final_trading.py
+```
+
+### 2. 查看原始库
+```bash
+# 查看ib_async库文档
+cd ib_async/docs
+# 或查看示例
+cd ib_async/examples
+```
+
+## 环境要求
 - Python 3.10+
 - Interactive Brokers Gateway
 - 有效的IB账户
 
-### 安装步骤
-
-1. **克隆项目**
-```bash
-git clone https://github.com/your-username/IB_Trading.git
-cd IB_Trading
-```
-
-2. **创建虚拟环境**
-```bash
-python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
-```
-
-3. **安装依赖**
+## 安装依赖
 ```bash
 pip install -r requirements.txt
 ```
-
-4. **配置IB Gateway**
-- 下载并安装IB Gateway
-- 启用API连接（端口4001）
-- 配置账户权限
-
-5. **运行策略**
-```bash
-cd ib_async
-python tqqq_final_trading.py
-```
-
-## 配置说明
-
-### IB连接配置
-```python
-strategy = TQQQSmartTradingStrategy(
-    host='127.0.0.1',    # IB Gateway地址
-    port=4001,           # IB Gateway端口
-    client_id=444        # 客户端ID
-)
-```
-
-### 策略参数
-- **EMA周期**: 20
-- **检查时间**: 北京时间21:25
-- **仓位比例**: 账户资金的10%
 
 ## 安全提醒
 
@@ -97,31 +87,18 @@ strategy = TQQQSmartTradingStrategy(
 - 建议先使用模拟账户测试
 - 请确保IB Gateway已正确配置
 
-## 日志和监控
-
-程序运行时会生成详细日志：
-- 控制台实时输出
-- `tqqq_trading.log` 文件记录
-- 包含所有交易决策和结果
-
-## 故障排除
-
-### 常见问题
-1. **连接失败**: 检查IB Gateway是否运行
-2. **数据获取失败**: 检查网络连接和账户权限
-3. **时区问题**: 程序自动处理夏令时
-
 ## 技术栈
 
 - **Python**: 主要编程语言
-- **ib_async**: IB API异步客户端
+- **ib_async**: IB API异步客户端（第三方库）
 - **pandas**: 数据处理
 - **numpy**: 数值计算
 - **pytz**: 时区处理
 
 ## 许可证
 
-本项目基于BSD许可证开源。
+- **您的策略**: 基于BSD许可证开源
+- **ib_async库**: 基于BSD许可证开源
 
 ## 免责声明
 
@@ -131,15 +108,9 @@ strategy = TQQQSmartTradingStrategy(
 
 欢迎提交Issue和Pull Request来改进这个项目。
 
-## 更新日志
-
-### v2.0
-- ✅ 实现持续运行模式
-- ✅ 添加定时检查功能
-- ✅ 改进日志记录
-- ✅ 添加安全退出机制
-- ✅ 基于EMA20的智能交易策略
-
 ---
 
-**注意**: 使用前请仔细阅读策略说明文档 
+**注意**: 
+- 您的交易策略在 `trading_strategy/` 目录中
+- 原始ib_async库在 `ib_async/` 目录中
+- 详细使用说明请查看 `trading_strategy/README.md` 
