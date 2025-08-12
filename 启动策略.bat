@@ -1,5 +1,11 @@
 @echo off
 chcp 65001 >nul
+setlocal enabledelayedexpansion
+
+:: 设置控制台编码
+powershell -Command "& {[Console]::OutputEncoding = [System.Text.Encoding]::UTF8}"
+set PYTHONIOENCODING=utf-8
+
 echo ========================================
 echo TQQQ智能交易策略启动器
 echo ========================================
@@ -98,9 +104,6 @@ echo ========================================
 echo.
 echo 🚀 正在启动策略...
 echo.
-
-:: 设置环境变量以解决Unicode编码问题
-set PYTHONIOENCODING=utf-8
 
 :: 运行策略
 %PYTHON_CMD% -u tqqq_final_trading.py

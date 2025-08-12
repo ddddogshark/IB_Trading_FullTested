@@ -1,5 +1,10 @@
 @echo off
 chcp 65001 >nul
+setlocal enabledelayedexpansion
+
+:: 设置控制台编码
+powershell -Command "& {[Console]::OutputEncoding = [System.Text.Encoding]::UTF8}"
+
 echo ========================================
 echo Python环境自动修复工具
 echo ========================================
