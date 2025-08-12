@@ -1,0 +1,17 @@
+ib_async/__pycache__
+dist
+build
+.vscode
+.idea
+.settings
+.spyproject
+.project
+.pydevproject
+.mypy_cache
+.eggs
+html
+doctrees
+ib_async.egg-info
+poetry.lock
+*.csv
+*.json
