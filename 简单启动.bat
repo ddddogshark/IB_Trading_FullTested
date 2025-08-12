@@ -17,7 +17,7 @@ cd /d "%~dp0ib_async"
 :: 检查虚拟环境是否存在
 if not exist "venv\Scripts\python.exe" (
     echo ❌ 虚拟环境不存在
-    echo 请先运行 "启动策略.bat" 来创建虚拟环境
+    echo 请先运行 "启动策略.bat" 或 "智能启动.bat" 来创建虚拟环境
     pause
     exit /b 1
 )
