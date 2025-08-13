@@ -74,13 +74,28 @@ echo [4/6] 检查现有服务...
 sc query "TQQQStrategy" >nul 2>&1
 if not errorlevel 1 (
     echo ⚠️ 服务已存在，正在删除...
-    nssm.exe remove "TQQQStrategy" confirm
+    
+    :: 先停止服务
+    echo 停止服务...
+    net stop "TQQQStrategy" >nul 2>&1
+    timeout /t 2 /nobreak >nul
+    
+    :: 使用NSSM删除
+    echo 删除服务...
+    nssm.exe remove "TQQQStrategy" confirm >nul 2>&1
     if errorlevel 1 (
-        echo ❌ 删除现有服务失败
-        pause
-        exit /b 1
+        echo ⚠️ NSSM删除失败，尝试使用sc删除...
+        sc delete "TQQQStrategy" >nul 2>&1
+        if errorlevel 1 (
+            echo ❌ 删除现有服务失败
+            echo 请手动删除服务或重启后重试
+            pause
+            exit /b 1
+        )
     )
     echo ✅ 现有服务已删除
+    echo ⏳ 等待服务完全清理...
+    timeout /t 5 /nobreak >nul
 )
 
 :: 安装服务
