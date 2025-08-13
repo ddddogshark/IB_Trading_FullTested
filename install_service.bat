@@ -26,11 +26,20 @@ echo.
 echo [1/6] 检查Python环境...
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Python未安装或未添加到PATH
-    pause
-    exit /b 1
+    echo ⚠️ 尝试使用py命令...
+    py --version >nul 2>&1
+    if errorlevel 1 (
+        echo ❌ Python未安装或未添加到PATH
+        pause
+        exit /b 1
+    ) else (
+        echo ✅ 使用py命令找到Python
+        set PYTHON_CMD=py
+    )
+) else (
+    echo ✅ Python环境检查通过
+    set PYTHON_CMD=python
 )
-echo ✅ Python环境正常
 
 :: 检查NSSM工具
 echo [2/6] 检查NSSM工具...

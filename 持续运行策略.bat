@@ -23,12 +23,21 @@ echo.
 echo [1/5] 检查Python环境...
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ Python未安装或未添加到PATH
-    echo 请先安装Python 3.8+
-    pause
-    exit /b 1
+    echo ⚠️ 尝试使用py命令...
+    py --version >nul 2>&1
+    if errorlevel 1 (
+        echo ❌ Python未安装或未添加到PATH
+        echo 请先安装Python 3.8+
+        pause
+        exit /b 1
+    ) else (
+        echo ✅ 使用py命令找到Python
+        set PYTHON_CMD=py
+    )
+) else (
+    echo ✅ Python环境检查通过
+    set PYTHON_CMD=python
 )
-echo ✅ Python环境正常
 
 :: 切换到项目目录
 echo [2/5] 切换到项目目录...
@@ -44,7 +53,7 @@ echo ✅ 已切换到项目目录
 echo [3/5] 检查虚拟环境...
 if not exist "venv\Scripts\activate.bat" (
     echo ⚠️ 虚拟环境不存在，正在创建...
-    python -m venv venv
+    %PYTHON_CMD% -m venv venv
     if errorlevel 1 (
         echo ❌ 创建虚拟环境失败
         pause
@@ -84,7 +93,7 @@ echo 🛑 按Ctrl+C停止程序
 echo.
 
 :: 运行持续模式
-python -u tqqq_trading.py --continuous
+%PYTHON_CMD% -u tqqq_trading.py --continuous
 
 if errorlevel 1 (
     echo.
