@@ -37,6 +37,8 @@ echo 正在创建配置文件...
 
 :: 创建Python脚本来配置邮件
 echo import json > temp_config.py
+echo import os >> temp_config.py
+echo. >> temp_config.py
 echo config = { >> temp_config.py
 echo     "smtp_server": "smtp.163.com", >> temp_config.py
 echo     "smtp_port": 587, >> temp_config.py
@@ -44,11 +46,31 @@ echo     "sender_email": "a36602476@163.com", >> temp_config.py
 echo     "receiver_email": "a36602476@163.com", >> temp_config.py
 echo     "password": "%password%" >> temp_config.py
 echo } >> temp_config.py
+echo. >> temp_config.py
+echo # 确保目录存在 >> temp_config.py
+echo os.makedirs('ib_async', exist_ok=True) >> temp_config.py
+echo. >> temp_config.py
 echo with open('ib_async/email_config.json', 'w', encoding='utf-8') as f: >> temp_config.py
 echo     json.dump(config, f, indent=4, ensure_ascii=False) >> temp_config.py
 echo print("邮件配置已保存") >> temp_config.py
 
+:: 尝试使用不同的Python命令
 python temp_config.py
+if errorlevel 1 (
+    echo 尝试使用py命令...
+    py temp_config.py
+    if errorlevel 1 (
+        echo 尝试使用python3命令...
+        python3 temp_config.py
+        if errorlevel 1 (
+            echo 所有Python命令都失败，请检查Python环境
+            echo 请确保Python已正确安装并添加到PATH
+            del temp_config.py >nul 2>&1
+            pause
+            goto exit
+        )
+    )
+)
 if errorlevel 1 (
     echo 配置失败，请检查Python环境
 ) else (

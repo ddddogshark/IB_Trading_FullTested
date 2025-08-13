@@ -132,6 +132,10 @@ dmypy.json
 *.log
 tqqq_trading.log
 
+# Email configuration (contains sensitive information)
+email_config.json
+ib_async/email_config.json
+
 # IDE
 .vscode/
 .idea/

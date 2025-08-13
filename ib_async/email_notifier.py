@@ -18,7 +18,10 @@ class EmailNotifier:
     
     def __init__(self, config_file='email_config.json'):
         """初始化邮件通知器"""
-        self.config_file = config_file
+        # 获取当前文件所在目录
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.config_file = os.path.join(current_dir, config_file)
         self.config = self.load_config()
         self.sender_email = 'a36602476@163.com'
         self.receiver_email = 'a36602476@163.com'
@@ -36,7 +39,7 @@ class EmailNotifier:
                     "smtp_port": 587,
                     "sender_email": "a36602476@163.com",
                     "receiver_email": "a36602476@163.com",
-                    "password": "请在此处配置您的邮箱密码"
+                    "password": "lzw.36602476"
                 }
                 self.save_config(default_config)
                 logging.warning(f"已创建默认配置文件: {self.config_file}")
@@ -71,8 +74,13 @@ class EmailNotifier:
             msg.attach(MIMEText(content, 'plain', 'utf-8'))
             
             # 连接SMTP服务器
-            server = smtplib.SMTP(self.config['smtp_server'], self.config['smtp_port'])
-            server.starttls()
+            try:
+                # 尝试SSL连接
+                server = smtplib.SMTP_SSL(self.config['smtp_server'], 465)
+            except:
+                # 如果SSL失败，尝试普通连接
+                server = smtplib.SMTP(self.config['smtp_server'], self.config['smtp_port'])
+                server.starttls()
             
             # 登录
             server.login(self.sender_email, self.config['password'])
