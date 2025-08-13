@@ -16,14 +16,38 @@ from ib_async.order import MarketOrder
 import logging
 
 # 配置日志
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('tqqq_trading.log', encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
+def setup_logging():
+    """配置日志系统"""
+    # 创建日志目录
+    import os
+    log_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # 配置日志格式
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    
+    # 文件处理器
+    file_handler = logging.FileHandler(os.path.join(log_dir, 'tqqq_trading.log'), encoding='utf-8')
+    file_handler.setFormatter(formatter)
+    
+    # 控制台处理器（仅在非服务环境下）
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    
+    # 配置根日志器
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logger.addHandler(file_handler)
+    
+    # 检查是否在服务环境下运行
+    try:
+        import win32serviceutil
+        # 在服务环境下，不添加控制台处理器
+    except ImportError:
+        # 在普通环境下，添加控制台处理器
+        logger.addHandler(console_handler)
+
+# 初始化日志
+setup_logging()
 
 class TQQQSmartTradingStrategy:
     """TQQQ智能交易策略类"""

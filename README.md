@@ -21,12 +21,16 @@ IB_Trading/
 │   ├── tqqq_trading.py         # 主策略文件
 │   ├── test_strategy.py        # 策略测试脚本
 │   ├── venv/                   # Python虚拟环境
-│   └── tqqq_trading.log        # 策略日志文件
+│   ├── tqqq_trading.log        # 策略日志文件
+│   ├── service.log             # Windows服务日志
+│   └── service_error.log       # Windows服务错误日志
 ├── requirements.txt             # Python依赖包
 ├── 启动TQQQ策略.bat            # 策略启动脚本
 ├── 持续运行策略.bat            # 持续运行脚本
 ├── 测试TQQQ策略.bat            # 策略测试脚本
 ├── 环境检测.bat                # 环境检测工具
+├── install_service.bat         # Windows服务安装脚本
+├── 服务管理.bat                # Windows服务管理脚本
 └── README.md                   # 项目说明文件
 ```
 
@@ -199,6 +203,25 @@ def should_check_today(self):
   ```
 - **停止方式**: 按 `Ctrl+C` 安全停止程序
 
+### Windows服务模式（推荐）
+- **特点**: 系统级服务，关闭CMD窗口不影响运行
+- **适用场景**: 生产环境长期运行
+- **安装方式**:
+  ```bash
+  # 以管理员身份运行
+  右键 install_service.bat → 以管理员身份运行
+  ```
+- **管理方式**:
+  ```bash
+  # 使用服务管理脚本
+  服务管理.bat
+  
+  # 或使用系统命令
+  net start TQQQStrategy    # 启动服务
+  net stop TQQQStrategy     # 停止服务
+  sc query TQQQStrategy     # 查看状态
+  ```
+
 ## 📅 策略执行时间表
 
 | 时间 | 操作 | 说明 |
@@ -240,8 +263,10 @@ check_time = '21:20'  # 检查时间 (北京时间)
 
 ## 📈 策略监控
 
-- **日志文件**: `tqqq_trading.log`
-- **实时输出**: 控制台显示
+- **策略日志**: `ib_async/tqqq_trading.log`
+- **服务日志**: `ib_async/service.log`
+- **错误日志**: `ib_async/service_error.log`
+- **实时输出**: 控制台显示（非服务模式）
 - **交易记录**: IB账户历史
 
 ## 🧪 测试功能
