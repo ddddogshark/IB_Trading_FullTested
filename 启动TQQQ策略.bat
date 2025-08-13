@@ -12,7 +12,7 @@ echo ========================================
 echo.
 
 :: 检查Python是否安装
-echo [1/6] 检查Python环境...
+echo [1/5] 检查Python环境...
 python --version >nul 2>&1
 if errorlevel 1 (
     echo ⚠️ 尝试使用py命令...
@@ -20,7 +20,6 @@ if errorlevel 1 (
     if errorlevel 1 (
         echo ❌ Python未安装或未添加到PATH
         echo 请先安装Python 3.8+
-        echo 或者将Python添加到系统PATH环境变量中
         pause
         exit /b 1
     ) else (
@@ -34,7 +33,7 @@ if errorlevel 1 (
 
 :: 进入项目目录
 echo.
-echo [2/6] 进入项目目录...
+echo [2/5] 进入项目目录...
 cd /d "%~dp0ib_async"
 if errorlevel 1 (
     echo ❌ 无法进入项目目录
@@ -45,7 +44,7 @@ echo ✅ 已进入项目目录: %CD%
 
 :: 检查虚拟环境
 echo.
-echo [3/6] 检查虚拟环境...
+echo [3/5] 检查虚拟环境...
 if not exist "venv\Scripts\activate.bat" (
     echo ⚠️ 虚拟环境不存在，正在创建...
     %PYTHON_CMD% -m venv venv
@@ -61,7 +60,7 @@ if not exist "venv\Scripts\activate.bat" (
 
 :: 激活虚拟环境
 echo.
-echo [4/6] 激活虚拟环境...
+echo [4/5] 激活虚拟环境...
 call venv\Scripts\activate.bat
 if errorlevel 1 (
     echo ❌ 虚拟环境激活失败
@@ -72,7 +71,7 @@ echo ✅ 虚拟环境激活成功
 
 :: 安装依赖
 echo.
-echo [5/6] 检查并安装依赖...
+echo [5/5] 检查并安装依赖...
 pip install -r ..\requirements.txt
 if errorlevel 1 (
     echo ❌ 依赖安装失败
@@ -83,14 +82,13 @@ echo ✅ 依赖检查完成
 
 :: 显示策略信息
 echo.
-echo [6/6] 启动TQQQ智能交易策略...
 echo ========================================
-echo 📊 策略信息:
-echo    - 策略名称: TQQQ智能交易策略
+echo 📊 TQQQ智能交易策略
+echo ========================================
 echo    - 交易标的: TQQQ (3倍杠杆纳斯达克ETF)
 echo    - 信号指标: EMA20移动平均线
 echo    - 交易条件: 昨日收盘价 > EMA20时买入
-echo    - 仓位大小: 账户资金的10%
+echo    - 仓位大小: 账户资金的10%%
 echo    - 检查时间: 每天北京时间21:20
 echo    - 交易模式: 实盘交易 (将实际扣款!)
 echo ========================================
@@ -106,7 +104,7 @@ echo 🚀 正在启动策略...
 echo.
 
 :: 运行策略
-%PYTHON_CMD% -u tqqq_final_trading.py
+%PYTHON_CMD% -u tqqq_trading.py
 
 :: 如果程序异常退出
 if errorlevel 1 (

@@ -18,19 +18,14 @@
 ```
 IB_Trading/
 ├── ib_async/                    # 主项目目录
-│   ├── tqqq_final_trading.py   # 主策略文件
-│   ├── test_strategy.py        # 完整测试脚本
-│   ├── debug_test.py           # 调试测试脚本
-│   ├── simple_test.py          # 简化测试脚本
+│   ├── tqqq_trading.py         # 主策略文件
+│   ├── test_strategy.py        # 策略测试脚本
 │   ├── venv/                   # Python虚拟环境
 │   └── tqqq_trading.log        # 策略日志文件
 ├── requirements.txt             # Python依赖包
-├── 启动策略.bat                # 策略启动脚本
-├── 测试策略.bat                # 策略测试脚本
-├── 快速测试.bat                # 快速测试脚本
-├── 检测Python.bat              # Python环境检测工具
-├── 修复Python环境.bat          # Python环境修复工具
-├── 简单启动.bat                # 简单启动脚本
+├── 启动TQQQ策略.bat            # 策略启动脚本
+├── 测试TQQQ策略.bat            # 策略测试脚本
+├── 环境检测.bat                # 环境检测工具
 ├── 策略说明.md                 # 详细策略说明
 ├── Python环境问题解决.md       # Python环境问题解决指南
 └── README.md                   # 项目说明文件
@@ -50,19 +45,13 @@ IB_Trading/
 #### 方式一：使用批处理脚本（推荐）
 ```bash
 # 启动策略
-双击 "启动策略.bat"
+双击 "启动TQQQ策略.bat"
 
 # 测试策略
-双击 "测试策略.bat"
+双击 "测试TQQQ策略.bat"
 
-# 快速测试
-双击 "快速测试.bat"
-
-# 检测Python环境
-双击 "检测Python.bat"
-
-# 修复Python环境
-双击 "修复Python环境.bat"
+# 检测环境
+双击 "环境检测.bat"
 ```
 
 #### 方式二：手动运行
@@ -77,7 +66,7 @@ venv\Scripts\activate
 pip install -r ..\requirements.txt
 
 # 运行策略
-python tqqq_final_trading.py
+python tqqq_trading.py
 
 # 运行测试
 python test_strategy.py
@@ -169,9 +158,9 @@ check_time = '21:20'  # 检查时间 (北京时间)
 ## 🛠️ 环境问题解决
 
 如果遇到Python环境问题：
-1. 运行 `检测Python.bat` 诊断问题
-2. 运行 `修复Python环境.bat` 自动修复
-3. 查看 `Python环境问题解决.md` 获取详细解决方案
+1. 运行 `环境检测.bat` 诊断问题
+2. 查看 `Python环境问题解决.md` 获取详细解决方案
+3. 运行 `启动TQQQ策略.bat` 自动创建虚拟环境
 
 ## 技术栈
 

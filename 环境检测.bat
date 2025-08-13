@@ -6,7 +6,7 @@ setlocal enabledelayedexpansion
 powershell -Command "& {[Console]::OutputEncoding = [System.Text.Encoding]::UTF8}"
 
 echo ========================================
-echo Python环境检测工具
+echo TQQQ策略环境检测工具
 echo ========================================
 echo.
 
@@ -53,21 +53,25 @@ if errorlevel 1 (
     where py
 )
 
-:: 方法4: 检查常见Python安装路径
+:: 检查项目环境
 echo.
-echo [方法4] 检查常见Python安装路径...
-set PYTHON_PATHS=^
-C:\Python*;^
-C:\Program Files\Python*;^
-C:\Program Files (x86)\Python*;^
-C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python*;^
-C:\Users\%USERNAME%\AppData\Local\Microsoft\WindowsApps\python.exe;^
-C:\Users\%USERNAME%\AppData\Local\Microsoft\WindowsApps\py.exe
+echo [方法4] 检查项目环境...
+if exist "ib_async\venv\Scripts\activate.bat" (
+    echo ✅ 项目虚拟环境存在
+) else (
+    echo ❌ 项目虚拟环境不存在
+)
 
-for %%p in (%PYTHON_PATHS%) do (
-    if exist "%%p" (
-        echo ✅ 找到Python: %%p
-    )
+if exist "ib_async\tqqq_trading.py" (
+    echo ✅ 主策略文件存在
+) else (
+    echo ❌ 主策略文件不存在
+)
+
+if exist "requirements.txt" (
+    echo ✅ 依赖文件存在
+) else (
+    echo ❌ 依赖文件不存在
 )
 
 echo.
@@ -79,5 +83,6 @@ echo 📋 建议:
 echo 1. 如果所有方法都失败，请安装Python 3.8+
 echo 2. 安装时勾选"Add Python to PATH"选项
 echo 3. 或者手动将Python路径添加到系统PATH环境变量
+echo 4. 运行"启动TQQQ策略.bat"可以自动创建虚拟环境
 echo.
 pause 
