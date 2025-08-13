@@ -6,7 +6,16 @@ setlocal enabledelayedexpansion
 powershell -Command "& {[Console]::OutputEncoding = [System.Text.Encoding]::UTF8}"
 
 echo ========================================
-echo TQQQ智能交易策略启动器
+echo TQQQ策略持续运行模式
+echo ========================================
+echo.
+
+echo ⚠️  重要提醒:
+echo    1. 持续运行模式会一直运行，直到手动停止
+echo    2. 每天北京时间21:20自动检查并执行交易
+echo    3. 按Ctrl+C可以安全停止程序
+echo    4. 确保IB Gateway已启动并连接到端口4001
+echo    5. 这是实盘交易，将实际扣款并执行交易
 echo ========================================
 echo.
 
@@ -69,27 +78,13 @@ if errorlevel 1 (
 echo ✅ 依赖包检查完成
 
 echo.
-echo 请选择运行模式:
-echo [1] 单次运行 (执行一次后退出)
-echo [2] 持续运行 (每天21:20自动执行)
+echo 🔄 启动持续运行模式...
+echo 📅 策略将在每天21:20自动执行
+echo 🛑 按Ctrl+C停止程序
 echo.
-set /p mode=请选择模式 (1-2): 
 
-if "%mode%"=="1" (
-    echo.
-    echo 🚀 启动单次运行模式...
-    %PYTHON_CMD% -u tqqq_trading.py
-) else if "%mode%"=="2" (
-    echo.
-    echo 🔄 启动持续运行模式...
-    echo ⚠️ 注意: 持续运行模式会一直运行，按Ctrl+C可停止
-    echo.
-    %PYTHON_CMD% -u tqqq_trading.py --continuous
-) else (
-    echo ❌ 无效选择
-    pause
-    exit /b 1
-)
+:: 运行持续模式
+python -u tqqq_trading.py --continuous
 
 if errorlevel 1 (
     echo.
@@ -102,7 +97,7 @@ if errorlevel 1 (
     pause
 ) else (
     echo.
-    echo ✅ 策略正常退出
+    echo ✅ 策略已停止
 )
 
 pause 

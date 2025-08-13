@@ -284,33 +284,56 @@ class TQQQSmartTradingStrategy:
                 await self.ib.disconnect()
                 logging.info("已断开IB连接")
     
-    async def run_strategy(self):
+    async def run_strategy(self, continuous_mode=False):
         """运行策略"""
         try:
             logging.info("=" * 60)
             logging.info("TQQQ智能交易策略启动")
+            if continuous_mode:
+                logging.info("🔄 持续运行模式已启用")
             logging.info("=" * 60)
             
-            # 检查交易时间
-            if not self.check_trading_time():
-                logging.info("不在交易时间，策略结束")
-                return
-            
-            # 执行策略
-            success = await self.execute_trading_strategy()
-            
-            if success:
-                logging.info("✅ 策略执行完成")
-            else:
-                logging.error("❌ 策略执行失败")
+            while True:
+                # 检查交易时间
+                if not self.check_trading_time():
+                    if continuous_mode:
+                        logging.info("⏰ 等待下次检查时间...")
+                        # 等待5分钟后再次检查
+                        await asyncio.sleep(300)  # 5分钟
+                        continue
+                    else:
+                        logging.info("不在交易时间，策略结束")
+                        return
                 
+                # 执行策略
+                success = await self.execute_trading_strategy()
+                
+                if success:
+                    logging.info("✅ 策略执行完成")
+                else:
+                    logging.error("❌ 策略执行失败")
+                
+                if continuous_mode:
+                    logging.info("🔄 等待下次执行...")
+                    # 执行完成后等待24小时
+                    await asyncio.sleep(86400)  # 24小时
+                else:
+                    break
+                    
+        except KeyboardInterrupt:
+            logging.info("🛑 用户中断策略运行")
         except Exception as e:
             logging.error(f"策略运行异常: {e}")
 
 async def main():
     """主函数"""
+    import sys
+    
+    # 检查是否启用持续运行模式
+    continuous_mode = '--continuous' in sys.argv or '-c' in sys.argv
+    
     strategy = TQQQSmartTradingStrategy()
-    await strategy.run_strategy()
+    await strategy.run_strategy(continuous_mode=continuous_mode)
 
 if __name__ == "__main__":
     asyncio.run(main()) 
