@@ -1,506 +1,234 @@
-# TQQQ智能交易策略
+# IB_Trading_FullTested
 
-## 📊 项目概述
+一个基于Interactive Brokers API的TQQQ智能交易策略系统，支持自动化交易、邮件通知和完整的错误处理。
 
-这是一个基于EMA20移动平均线的TQQQ自动化交易策略，使用Interactive Brokers (IB) API进行实盘交易。
+## 🚀 功能特性
 
-## 🎯 策略特点
+- **智能交易策略**: 基于EMA20移动平均线的TQQQ自动化交易
+- **实时连接**: 支持IB Gateway连接，实时获取市场数据
+- **账户管理**: 自动获取账户信息，智能计算仓位大小
+- **邮件通知**: 完整的交易通知和错误报告系统
+- **日志记录**: 详细的交易日志和系统状态记录
+- **持续运行**: 支持24/7持续运行模式
+- **错误处理**: 完善的异常处理和恢复机制
 
-- **交易标的**: TQQQ (3倍杠杆纳斯达克ETF)
-- **信号指标**: EMA20指数移动平均线
-- **买入条件**: 昨日收盘价 > EMA20
-- **仓位管理**: 账户资金的10%
-- **执行时间**: 每天北京时间21:20自动检查
-- **交易模式**: 实盘交易
-- **邮件通知**: 163邮箱自动发送交易通知和每日总结
+## 📋 系统要求
 
-## 📁 项目结构
+- Python 3.8+
+- Interactive Brokers Gateway
+- 有效的IB账户
+- 网络连接
 
-```
-IB_Trading/
-├── ib_async/                    # 主项目目录
-│   ├── tqqq_trading.py         # 主策略文件
-│   ├── email_notifier.py       # 邮件通知模块
-│   ├── email_config.json       # 邮件配置文件
-│   ├── test_strategy.py        # 策略测试脚本
-│   ├── venv/                   # Python虚拟环境
-│   ├── tqqq_trading.log        # 策略日志文件
-│   ├── service.log             # Windows服务日志
-│   └── service_error.log       # Windows服务错误日志
-├── requirements.txt             # Python依赖包
-├── 启动TQQQ策略.bat            # 策略启动脚本
-├── 持续运行策略.bat            # 持续运行脚本
-├── 测试TQQQ策略.bat            # 策略测试脚本
-├── 环境检测.bat                # 环境检测工具
-├── install_service.bat         # Windows服务安装脚本
-├── 服务管理.bat                # Windows服务管理脚本
-├── 配置邮件.bat                # 邮件配置工具
-└── README.md                   # 项目说明文件
-```
+## 🛠️ 安装步骤
 
-## 🚀 快速开始
-
-### 1. 环境准备
-
-确保您的系统已安装：
-- **操作系统**: Windows 10/11
-- **Python**: 3.8+ (推荐3.11或3.12)
-- **内存**: 至少4GB RAM
-- **网络**: 稳定的互联网连接
-- **Interactive Brokers Gateway**
-- **有效的IB账户**
-
-### 2. 启动方式
-
-#### 方式一：使用批处理脚本（推荐）
+### 1. 克隆仓库
 ```bash
-# 检测环境
-双击 "环境检测.bat"
-
-# 启动策略（单次运行）
-双击 "启动TQQQ策略.bat"
-
-# 启动持续运行
-双击 "持续运行策略.bat"
-
-# 测试策略
-双击 "测试TQQQ策略.bat"
-
-# 配置邮件通知
-双击 "配置邮件.bat"
+git clone https://github.com/ddddogshark/IB_Trading_FullTested.git
+cd IB_Trading_FullTested
 ```
 
-#### 方式二：手动运行
+### 2. 创建虚拟环境
 ```bash
-# 进入项目目录
-cd ib_async
-
-# 激活虚拟环境
-venv\Scripts\activate
-
-# 安装依赖
-pip install -r ..\requirements.txt
-
-# 运行策略（单次运行）
-python tqqq_trading.py
-
-# 运行持续模式
-python tqqq_trading.py --continuous
-
-# 运行测试
-python test_strategy.py
+python -m venv .venv
 ```
 
-## 📧 邮件通知功能
+### 3. 激活虚拟环境
+**Windows:**
+```bash
+.venv\Scripts\Activate.ps1
+```
 
-### 邮件通知类型
+**Linux/Mac:**
+```bash
+source .venv/bin/activate
+```
 
-1. **交易通知** - 每次交易执行后立即发送
-   - 交易动作（买入/卖出/持有）
-   - TQQQ交易数量和金额
-   - 交易价格和账户余额
-   - 策略执行状态
+### 4. 安装依赖
+```bash
+pip install -r requirements.txt
+```
 
-2. **每日总结** - 每天21:28自动发送
-   - 当日交易汇总统计
-   - 买入/卖出/持有次数
-   - 总交易金额和数量
-   - 策略表现分析
+## ⚙️ 配置
 
-3. **异常通知** - 策略异常时立即发送
-   - 进程停止或退出
-   - 连接异常
-   - 交易执行失败
-   - 系统错误
-
-### 邮件配置步骤
-
-1. **开启163邮箱SMTP服务**：
-   - 登录163邮箱网页版
-   - 进入设置 → 客户端授权密码
-   - 开启SMTP服务
-   - 获取授权码（不是登录密码）
-
-2. **配置邮件设置**：
-   ```bash
-   # 运行邮件配置工具
-   双击 "配置邮件.bat"
-   
-   # 输入SMTP授权码
-   # 配置文件将保存到 ib_async/email_config.json
-   ```
-
-3. **测试邮件功能**：
-   - 运行策略时会自动发送交易通知
-   - 每天21:28发送每日总结
-   - 异常时发送错误通知
-
-### 邮件配置示例
-
+### 1. 邮件配置
+编辑 `email_config.json` 文件：
 ```json
 {
-    "smtp_server": "smtp.163.com",
+    "smtp_server": "smtp.gmail.com",
     "smtp_port": 587,
-    "sender_email": "a36602476@163.com",
-    "receiver_email": "a36602476@163.com",
-    "password": "您的SMTP授权码"
+    "sender_email": "your-email@gmail.com",
+    "sender_password": "your-app-password",
+    "recipient_email": "recipient@example.com"
 }
 ```
 
-## 📊 策略执行流程
-```python
-# 创建策略实例
-strategy = TQQQSmartTradingStrategy(
-    host='127.0.0.1',    # IB Gateway地址
-    port=4001,           # IB Gateway端口
-    client_id=444        # 客户端ID
-)
-```
+### 2. IB Gateway配置
+- 启动IB Gateway
+- 确保端口4001开放
+- 配置API连接
 
-### 第二步：连接IB Gateway
-- 建立与IB Gateway的连接
-- 验证连接状态
-- 设置超时时间
+## 🎯 使用方法
 
-### 第三步：创建交易合约
-- 创建TQQQ股票合约对象
-- 验证合约信息
-- 确保合约可用
+### 运行交易策略
 
-### 第四步：获取历史数据
-- 获取30天的日线数据
-- 包含开盘价、最高价、最低价、收盘价
-- 用于计算技术指标
-
-### 第五步：计算技术指标
-```python
-# 计算EMA20移动平均线
-def calculate_ema(self, prices, period=20):
-    return prices.ewm(span=period).mean()
-```
-
-### 第六步：分析交易条件
-```python
-# 分析是否满足交易条件
-def analyze_trading_conditions(self):
-    # 获取昨日数据
-    yesterday_close = tqqq_data.iloc[-2]['close']  # 昨日收盘价
-    yesterday_ema20 = tqqq_data.iloc[-2]['ema20']  # 昨日EMA20
-    
-    # 判断信号
-    if yesterday_close > yesterday_ema20:
-        return True, current_price  # 满足买入条件
-    else:
-        return False, current_price  # 不满足条件
-```
-
-### 第七步：获取账户信息
-- 获取账户净资产
-- 用于计算仓位大小
-
-### 第八步：计算仓位大小
-```python
-# 计算买入股数
-def calculate_position_size(self, percentage=0.1):
-    account_value = self.get_account_value()
-    available_funds = account_value * percentage  # 10%资金
-    current_price = self.get_current_tqqq_price()
-    quantity = int(available_funds / current_price)  # 向下取整
-```
-
-### 第九步：获取当前价格
-- 获取TQQQ实时市场价格
-- 如果无法获取实时价格，使用历史数据
-
-### 第十步：执行买入订单
-```python
-# 下买单
-def place_buy_order(self, percentage=0.1):
-    quantity = self.calculate_position_size(percentage)
-    order = MarketOrder('BUY', quantity)  # 市价单
-    order.outsideRth = True  # 允许常规交易时间以外交易
-    trade = self.ib.placeOrder(self.tqqq_contract, order)
-```
-
-### 第十一步：时间检查
-```python
-# 检查是否应该执行策略
-def should_check_today(self):
-    beijing_time = datetime.now(self.beijing_tz)
-    current_time = beijing_time.time()
-    target_time = datetime.strptime('21:20', '%H:%M').time()
-    
-    # 允许5分钟误差
-    time_diff = abs((current_time.hour * 60 + current_time.minute) - 
-                  (target_time.hour * 60 + target_time.minute))
-    
-    return time_diff <= 5
-```
-
-## 🚀 运行模式
-
-### 单次运行模式
-- **特点**: 执行一次策略后自动退出
-- **适用场景**: 测试、手动执行、调试
-- **启动方式**: 
-  ```bash
-  # 使用启动脚本选择模式1
-  启动TQQQ策略.bat
-  
-  # 或直接运行
-  python tqqq_trading.py
-  ```
-
-### 持续运行模式
-- **特点**: 程序持续运行，每天21:20自动执行
-- **适用场景**: 长期自动化交易
-- **启动方式**:
-  ```bash
-  # 使用持续运行脚本
-  持续运行策略.bat
-  
-  # 或直接运行
-  python tqqq_trading.py --continuous
-  ```
-- **停止方式**: 按 `Ctrl+C` 安全停止程序
-
-### Windows服务模式（推荐）
-- **特点**: 系统级服务，关闭CMD窗口不影响运行
-- **适用场景**: 生产环境长期运行
-- **安装方式**:
-  ```bash
-  # 以管理员身份运行
-  右键 install_service.bat → 以管理员身份运行
-  ```
-- **管理方式**:
-  ```bash
-  # 使用服务管理脚本
-  服务管理.bat
-  
-  # 或使用系统命令
-  net start TQQQStrategy    # 启动服务
-  net stop TQQQStrategy     # 停止服务
-  sc query TQQQStrategy     # 查看状态
-  ```
-
-## 📅 策略执行时间表
-
-| 时间 | 操作 | 说明 |
-|------|------|------|
-| 每天21:20 | 自动检查 | 检查交易条件 |
-| 满足条件时 | 立即买入 | 使用10%账户资金 |
-| 不满足条件 | 跳过 | 等待下一天 |
-| 持续模式 | 每5分钟检查一次 | 直到到达执行时间 |
-
-## ⚠️ 重要提醒
-
-### 风险提示
-- **实盘交易**: 这是实盘交易策略，将实际扣款并执行交易
-- **杠杆风险**: TQQQ是3倍杠杆ETF，波动较大
-- **市场风险**: 股市有风险，投资需谨慎
-- **技术风险**: 依赖网络连接和IB Gateway稳定性
-
-### 使用前准备
-1. **IB Gateway**: 确保IB Gateway已启动并监听端口4001
-2. **账户资金**: 确保账户有足够资金进行交易
-3. **网络连接**: 确保网络连接稳定
-4. **权限设置**: 确保账户有交易TQQQ的权限
-
-## 🔧 配置说明
-
-### 连接参数
-```python
-host = '127.0.0.1'    # IB Gateway地址
-port = 4001           # IB Gateway端口
-client_id = 444       # 客户端ID
-```
-
-### 策略参数
-```python
-ema_period = 20       # EMA周期
-position_percentage = 0.1  # 仓位比例 (10%)
-check_time = '21:20'  # 检查时间 (北京时间)
-```
-
-## 📈 策略监控
-
-- **策略日志**: `ib_async/tqqq_trading.log`
-- **服务日志**: `ib_async/service.log`
-- **错误日志**: `ib_async/service_error.log`
-- **实时输出**: 控制台显示（非服务模式）
-- **交易记录**: IB账户历史
-
-## 🧪 测试功能
-
-### 组件测试
-- 连接IB Gateway测试
-- 合约创建测试
-- 历史数据获取测试
-- EMA计算测试
-- 账户信息测试
-- 当前价格获取测试
-- 仓位计算测试
-- 时间检查测试
-- 交易条件分析测试
-
-### 运行测试
+#### 单次运行
 ```bash
-# 运行测试脚本
-双击 "测试TQQQ策略.bat"
-
-# 或手动运行
-python test_strategy.py
+cd ib_async
+python tqqq_trading.py
 ```
 
-## 🔄 策略优化建议
+#### 持续运行模式
+```bash
+cd ib_async
+python tqqq_trading.py --continuous
+```
 
-1. **参数调整**: 可以调整EMA周期和资金比例
-2. **风险控制**: 可以添加止损和止盈机制
-3. **信号优化**: 可以结合其他技术指标
-4. **时间优化**: 可以调整检查时间频率
+### 策略参数配置
 
-## 🛠️ 环境问题解决
+在 `tqqq_trading.py` 中可以调整以下参数：
+
+```python
+self.ema_period = 20              # EMA周期
+self.position_percentage = 0.1    # 仓位百分比（10%）
+self.check_time = '10:10'         # 交易检查时间
+self.daily_summary_time = '10:11' # 每日总结时间
+```
+
+## 📊 策略说明
+
+### 交易逻辑
+1. **技术分析**: 计算TQQQ的20日指数移动平均线(EMA20)
+2. **买入条件**: 当收盘价 > EMA20时触发买入信号
+3. **仓位管理**: 使用账户总价值的10%进行交易
+4. **风险控制**: 自动计算合适的股数，避免过度杠杆
+
+### 执行流程
+1. 连接到IB Gateway
+2. 获取TQQQ历史数据（30天）
+3. 计算EMA20指标
+4. 分析交易条件
+5. 获取账户信息
+6. 计算仓位大小
+7. 执行买入订单
+8. 发送邮件通知
+
+## 📧 邮件通知
+
+系统会发送以下类型的邮件：
+
+- **交易执行通知**: 订单成功执行时
+- **每日状态报告**: 每日策略执行状态
+- **错误通知**: 系统异常或连接问题时
+- **策略中断通知**: 用户中断或系统异常时
+
+## 📝 日志系统
+
+### 日志文件
+- `tqqq_trading.log`: 主要交易日志
+- 包含详细的连接、交易、错误信息
+
+### 日志级别
+- INFO: 正常操作信息
+- WARNING: 警告信息
+- ERROR: 错误信息
+
+## 🔧 故障排除
 
 ### 常见问题
 
-#### 问题1: Python未找到
-```
-❌ Python未安装或未添加到PATH
-```
+1. **连接失败**
+   - 检查IB Gateway是否启动
+   - 确认端口4001开放
+   - 验证账户权限
 
-**解决方案**:
-1. 重新安装Python，确保勾选"Add Python to PATH"
-2. 运行 `环境检测.bat` 诊断问题
+2. **历史数据获取失败**
+   - 检查网络连接
+   - 确认市场数据订阅
+   - 验证合约信息
 
-#### 问题2: 虚拟环境创建失败
-```
-❌ 虚拟环境创建失败
-```
+3. **邮件发送失败**
+   - 检查SMTP配置
+   - 确认邮箱密码正确
+   - 验证网络连接
 
-**解决方案**:
-1. 确保Python版本为3.8+
-2. 检查磁盘空间是否充足
-3. 以管理员身份运行脚本
-
-#### 问题3: 依赖安装失败
-```
-❌ 依赖安装失败
+### 调试模式
+启用详细日志输出：
+```python
+logging.getLogger().setLevel(logging.DEBUG)
 ```
 
-**解决方案**:
-1. 检查网络连接
-2. 尝试使用国内镜像源:
-   ```bash
-   pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
-   ```
+## 📈 性能监控
 
-#### 问题4: 编码问题
-```
-'ho' is not recognized as an internal or external command
-```
+### 关键指标
+- 连接成功率
+- 订单执行时间
+- 策略命中率
+- 账户收益率
 
-**解决方案**:
-1. 使用 `启动TQQQ策略.bat` 启动
-2. 确保系统支持UTF-8编码
+### 监控建议
+- 定期检查日志文件
+- 监控邮件通知
+- 跟踪账户余额变化
+- 分析交易历史
 
-#### 问题5: IB Gateway连接失败
-```
-❌ 连接失败
-```
+## 🔒 安全注意事项
 
-**解决方案**:
-1. 确保IB Gateway已启动
-2. 检查端口4001是否被占用
-3. 确认防火墙设置
+1. **账户安全**
+   - 不要在代码中硬编码账户信息
+   - 定期更换API密钥
+   - 监控异常交易活动
 
-### 环境检测工具
+2. **网络安全**
+   - 使用安全的网络连接
+   - 定期更新系统
+   - 监控网络流量
 
-#### 使用检测脚本
-- `环境检测.bat`: 检测Python环境和项目配置
-
-#### 手动检测命令
-```bash
-# 检测Python版本
-python --version
-
-# 检测pip
-pip --version
-
-# 检测虚拟环境
-venv\Scripts\python.exe --version
-```
-
-### 部署验证
-
-#### 1. 环境检查
-```bash
-# 检查Python
-python --version
-
-# 检查虚拟环境
-venv\Scripts\activate
-python --version
-
-# 检查依赖
-pip list
-```
-
-#### 2. 功能测试
-1. 运行 `测试TQQQ策略.bat`
-2. 检查输出是否正常
-3. 确认没有错误信息
-
-#### 3. 策略测试
-1. 运行 `测试TQQQ策略.bat`
-2. 检查各项功能是否正常
-3. 确认连接IB Gateway成功
-4. 测试持续运行模式：运行 `持续运行策略.bat`
-
-## 📞 技术支持
-
-如果遇到问题，请检查：
-1. IB Gateway是否正常运行
-2. 网络连接是否正常
-3. 账户权限是否正确
-4. Python环境和依赖是否正确安装
-
-### 获取帮助
-1. 运行 `环境检测.bat` 诊断问题
-2. 查看项目日志文件
-3. 运行 `测试TQQQ策略.bat` 进行功能测试
-
-### 日志文件位置
-- 策略日志: `ib_async/tqqq_trading.log`
-- 系统日志: Windows事件查看器
-
-### 联系方式
-- GitHub Issues: [项目Issues页面](https://github.com/ddddogshark/IB_Trading/issues)
-- 项目文档: 查看项目根目录的README.md
-
-## 技术栈
-
-- **Python**: 主要编程语言
-- **ib_async**: IB API异步客户端（第三方库）
-- **pandas**: 数据处理
-- **numpy**: 数值计算
-- **pytz**: 时区处理
+3. **数据安全**
+   - 定期备份配置和日志
+   - 保护敏感信息
+   - 使用加密传输
 
 ## 📄 许可证
 
-- **您的策略**: 基于BSD许可证开源
-- **ib_async库**: 基于BSD许可证开源
+本项目采用MIT许可证。详见 [LICENSE](LICENSE) 文件。
 
-## 免责声明
+## 🤝 贡献
 
-本项目仅供学习和研究使用。交易有风险，投资需谨慎。作者不对任何投资损失承担责任。
+欢迎提交Issue和Pull Request来改进项目。
 
-## 贡献
+### 贡献指南
+1. Fork项目
+2. 创建功能分支
+3. 提交更改
+4. 推送到分支
+5. 创建Pull Request
 
-欢迎提交Issue和Pull Request来改进这个项目。
+## 📞 支持
+
+如果您遇到问题或有建议，请：
+
+1. 查看[Issues](https://github.com/ddddogshark/IB_Trading_FullTested/issues)
+2. 创建新的Issue
+3. 联系维护者
+
+## ⚠️ 免责声明
+
+本软件仅供学习和研究使用。使用本软件进行实际交易的风险由用户自行承担。作者不对任何投资损失负责。
+
+**重要提醒**: 
+- 在实盘交易前，请充分测试策略
+- 了解相关风险
+- 遵守当地法律法规
+- 咨询专业投资顾问
+
+## 📚 相关资源
+
+- [Interactive Brokers API文档](https://interactivebrokers.github.io/tws-api/)
+- [ib_async库文档](https://github.com/ib-api-reloaded/ib_async)
+- [TQQQ ETF信息](https://www.invesco.com/us/financial-products/etfs/product-detail?ticker=TQQQ)
 
 ---
 
-**注意**: 
-- 您的交易策略在 `ib_async/` 目录中
-- 这是实盘交易策略，请确保在充分测试后再使用
-- 交易有风险，投资需谨慎！
+**版本**: 1.0.0  
+**最后更新**: 2025-08-15  
+**维护者**: ddddogshark

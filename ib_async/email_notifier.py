@@ -18,10 +18,11 @@ class EmailNotifier:
     
     def __init__(self, config_file='email_config.json'):
         """初始化邮件通知器"""
-        # 获取当前文件所在目录
+        # 获取项目根目录（ib_async的上级目录）
         import os
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_file = os.path.join(current_dir, config_file)
+        project_root = os.path.dirname(current_dir)  # 回到上级目录
+        self.config_file = os.path.join(project_root, config_file)
         self.config = self.load_config()
         self.sender_email = 'a36602476@163.com'
         self.receiver_email = 'a36602476@163.com'
@@ -60,7 +61,7 @@ class EmailNotifier:
     def send_email(self, subject, content):
         """发送邮件"""
         try:
-            if not self.config.get('password') or self.config['password'] == "请在此处配置您的邮箱密码":
+            if not self.config.get('password') or self.config['password'] == "请在此处配置您的邮箱密码" or self.config['password'] == "":
                 logging.error("邮箱密码未配置，无法发送邮件")
                 return False
             
@@ -101,6 +102,25 @@ class EmailNotifier:
         """发送交易通知"""
         subject = f"TQQQ策略交易通知 - {datetime.now().strftime('%Y-%m-%d')}"
         
+        # 根据交易状态调整邮件内容
+        action = trading_info.get('action', '未知')
+        status = trading_info.get('status', '未知')
+        connection_status = trading_info.get('connection_status', '未知')
+        error_message = trading_info.get('error_message', '')
+        
+        # 根据不同的交易状态生成不同的邮件内容
+        if action == 'STATUS_CHECK':
+            subject = f"TQQQ策略每日状态报告 - {datetime.now().strftime('%Y-%m-%d')}"
+            status_description = "策略正常运行，每日状态检查"
+        elif action == 'HOLD':
+            status_description = "策略分析完成，不满足交易条件"
+        elif status == '成功':
+            status_description = "交易执行成功"
+        elif status == '失败':
+            status_description = "交易执行失败"
+        else:
+            status_description = f"策略执行状态: {status}"
+        
         content = f"""
 TQQQ智能交易策略 - 每日交易报告
 ========================================
@@ -108,8 +128,11 @@ TQQQ智能交易策略 - 每日交易报告
 
 交易详情:
 ----------------------------------------
-策略动作: {trading_info.get('action', '未知')}
-交易状态: {trading_info.get('status', '未知')}
+策略动作: {action}
+交易状态: {status}
+状态描述: {status_description}
+
+连接状态: {connection_status}
 
 交易信息:
 - TQQQ交易数量: {trading_info.get('quantity', 0)} 股
@@ -127,6 +150,16 @@ TQQQ智能交易策略 - 每日交易报告
 
 备注:
 {trading_info.get('notes', '无')}
+"""
+        
+        # 如果有错误信息，添加到邮件内容中
+        if error_message:
+            content += f"""
+错误信息:
+{error_message}
+"""
+        
+        content += """
 ========================================
         """
         
