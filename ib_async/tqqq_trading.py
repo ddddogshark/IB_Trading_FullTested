@@ -80,20 +80,31 @@ class TQQQSmartTradingStrategy:
     def load_time_config(self):
         """从配置文件加载时间设置"""
         try:
-            config_file = 'trading_config.json'
+            # 优先使用外部配置文件（与exe同目录）
+            import sys
+            if getattr(sys, 'frozen', False):
+                # 如果是exe运行，使用exe所在目录
+                exe_dir = os.path.dirname(sys.executable)
+                config_file = os.path.join(exe_dir, 'trading_config.json')
+            else:
+                # 如果是Python脚本运行，使用当前目录
+                config_file = 'trading_config.json'
+            
             if os.path.exists(config_file):
                 with open(config_file, 'r', encoding='utf-8') as f:
                     config = json.load(f)
                     check_time = config.get('check_time', '11:19')
                     daily_summary_time = config.get('daily_summary_time', '11:20')
-                    logging.info(f"从配置文件加载时间设置: {check_time}, {daily_summary_time}")
+                    logging.info(f"从外部配置文件加载时间设置: {config_file}")
+                    logging.info(f"时间配置: {check_time}, {daily_summary_time}")
                     return check_time, daily_summary_time
             else:
                 # 创建默认配置文件
                 default_config = {
                     'check_time': '11:19',
                     'daily_summary_time': '11:20',
-                    'description': 'TQQQ交易策略时间配置'
+                    'description': 'TQQQ交易策略时间配置',
+                    'instructions': '修改check_time和daily_summary_time来调整交易检查时间和每日总结时间'
                 }
                 with open(config_file, 'w', encoding='utf-8') as f:
                     json.dump(default_config, f, ensure_ascii=False, indent=2)
