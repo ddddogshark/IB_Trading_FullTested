@@ -334,6 +334,28 @@ class TQQQSmartTradingStrategy:
             logging.error(f"计算仓位失败: {e}")
             return 0
     
+    async def get_current_position(self):
+        """获取当前TQQQ持仓"""
+        try:
+            # 等待一下让持仓信息更新
+            await asyncio.sleep(1)
+            
+            # 获取所有持仓
+            positions = self.ib.positions()
+            
+            # 查找TQQQ持仓
+            for position in positions:
+                if position.contract.symbol == 'TQQQ':
+                    logging.info(f"当前TQQQ持仓: {position.position} 股")
+                    return position.position
+            
+            logging.info("当前无TQQQ持仓")
+            return 0
+            
+        except Exception as e:
+            logging.error(f"获取当前持仓失败: {e}")
+            return 0
+    
     async def place_market_order(self, contract, shares, action='BUY'):
         """下市价单"""
         try:
@@ -342,16 +364,19 @@ class TQQQSmartTradingStrategy:
             
             logging.info(f"下单: {action} {shares} 股 TQQQ")
             
-            # 等待订单状态
-            while not trade.isDone():
-                await asyncio.sleep(1)
+            # 等待订单状态更新
+            await asyncio.sleep(2)
             
-            if trade.orderStatus.status == 'Filled':
-                logging.info(f"订单执行成功: {trade.orderStatus.status}")
+            # 检查订单状态，如果订单被接受就认为成功
+            if trade.orderStatus.status in ['PreSubmitted', 'Submitted', 'Filled', 'PartiallyFilled']:
+                logging.info(f"订单提交成功: {trade.orderStatus.status}")
                 return True
-            else:
-                logging.error(f"订单执行失败: {trade.orderStatus.status}")
+            elif trade.orderStatus.status in ['Cancelled', 'Inactive', 'Error']:
+                logging.error(f"订单提交失败: {trade.orderStatus.status}")
                 return False
+            else:
+                logging.info(f"订单状态: {trade.orderStatus.status}")
+                return True
                 
         except Exception as e:
             logging.error(f"下单失败: {e}")
@@ -480,7 +505,11 @@ class TQQQSmartTradingStrategy:
             trading_result['current_price'] = current_price
             trading_result['price'] = current_price
             
-            # 6. 计算仓位
+            # 6. 获取当前持仓
+            current_position = await self.get_current_position()
+            trading_result['current_position'] = current_position
+            
+            # 7. 计算仓位
             shares = self.calculate_position_size(account_value, current_price)
             if shares == 0:
                 trading_result['notes'] = '仓位计算为0，无法交易'
@@ -603,10 +632,12 @@ class TQQQSmartTradingStrategy:
                 # 执行策略
                 trading_result = await self.execute_trading_strategy()
                 
-                # 无论交易结果如何，都发送每日状态邮件
-                if email_service.should_send_daily_email():
-                    logging.info("📧 发送每日状态邮件...")
-                    email_service.send_daily_status_email(trading_result)
+                # 记录交易结果详细信息
+                logging.info(f"交易策略执行结果: {trading_result}")
+                
+                # 每次执行策略后都发送邮件通知
+                logging.info("📧 发送交易结果邮件...")
+                email_service.send_daily_status_email(trading_result)
                 
                 if trading_result['status'] == '成功':
                     logging.info("✅ 策略执行完成")
@@ -639,21 +670,13 @@ class TQQQSmartTradingStrategy:
                     
         except KeyboardInterrupt:
             logging.info("🛑 用户中断策略运行")
-            # 发送中断通知
-            try:
-                email_service.send_strategy_error_email("用户中断策略运行")
-            except:
-                pass
+            # 不发送错误邮件，因为这是正常的中断
         except asyncio.CancelledError:
             logging.info("🛑 策略任务被取消")
-            # 发送中断通知
-            try:
-                email_service.send_strategy_error_email("策略任务被取消")
-            except:
-                pass
+            # 不发送错误邮件，因为这是正常的取消
         except Exception as e:
             logging.error(f"策略运行异常: {e}")
-            # 发送异常通知
+            # 只有在真正的异常情况下才发送错误邮件
             try:
                 email_service.send_strategy_error_email(str(e))
             except:

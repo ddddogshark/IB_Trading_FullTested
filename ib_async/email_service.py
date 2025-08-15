@@ -59,6 +59,9 @@ class EmailService:
                     'error_message': ''
                 }
             
+            # 记录交易结果信息用于调试
+            logging.info(f"发送每日状态邮件，交易结果: {trading_result}")
+            
             # 发送邮件通知
             email_notifier.send_trading_notification(trading_result)
             logging.info("✅ 每日状态邮件发送成功")
