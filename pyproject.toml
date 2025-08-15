@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "ib-trading-fulltested"
+version = "1.0.0"
+description = "TQQQ智能交易策略系统 - 基于Interactive Brokers API的自动化交易"
+authors = ["ddddogshark"]
+readme = "README.md"
+packages = [{include = "ib_async"}]
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+ib_async = "^2.0.1"
+pandas = "^2.0.0"
+numpy = "^1.24.0"
+pytz = "^2023.3"
+
+[tool.poetry.group.dev.dependencies]
+pyinstaller = "^6.15.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+tqqq-trading = "ib_async.tqqq_trading:main"
