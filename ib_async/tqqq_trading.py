@@ -82,23 +82,35 @@ class TQQQSmartTradingStrategy:
         try:
             # 优先使用外部配置文件（与exe同目录）
             import sys
+            import os
+            import json
             if getattr(sys, 'frozen', False):
                 # 如果是exe运行，使用exe所在目录
                 exe_dir = os.path.dirname(sys.executable)
                 config_file = os.path.join(exe_dir, 'trading_config.json')
+                logging.info(f"EXE运行模式，配置文件路径: {config_file}")
             else:
                 # 如果是Python脚本运行，使用当前目录
                 config_file = 'trading_config.json'
+                logging.info(f"Python脚本运行模式，配置文件路径: {config_file}")
             
+            # 检查配置文件是否存在
             if os.path.exists(config_file):
+                logging.info(f"配置文件存在: {config_file}")
+                # 读取文件内容并显示
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    logging.info(f"配置文件内容: {content}")
+                
+                # 重新打开文件解析JSON
                 with open(config_file, 'r', encoding='utf-8') as f:
                     config = json.load(f)
                     check_time = config.get('check_time', '11:19')
                     daily_summary_time = config.get('daily_summary_time', '11:20')
-                    logging.info(f"从外部配置文件加载时间设置: {config_file}")
-                    logging.info(f"时间配置: {check_time}, {daily_summary_time}")
+                    logging.info(f"解析后的时间配置: check_time={check_time}, daily_summary_time={daily_summary_time}")
                     return check_time, daily_summary_time
             else:
+                logging.warning(f"配置文件不存在: {config_file}")
                 # 创建默认配置文件
                 default_config = {
                     'check_time': '11:19',
@@ -112,6 +124,8 @@ class TQQQSmartTradingStrategy:
                 return '11:19', '11:20'
         except Exception as e:
             logging.error(f"加载配置文件失败: {e}, 使用默认时间设置")
+            import traceback
+            logging.error(f"错误详情: {traceback.format_exc()}")
             return '11:19', '11:20'
     
     async def connect_to_ib(self):

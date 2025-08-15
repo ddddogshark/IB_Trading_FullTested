@@ -27,6 +27,13 @@ def build_exe():
     # 创建持续运行的主程序文件
     create_continuous_runner()
     
+    # 确保使用最新的配置文件进行构建
+    print("📋 确保使用最新的配置文件...")
+    if os.path.exists('trading_config.json'):
+        print(f"当前trading_config.json内容:")
+        with open('trading_config.json', 'r', encoding='utf-8') as f:
+            print(f.read())
+    
     # 构建后台运行版本（无控制台窗口）
     print("🔨 构建后台运行版本...")
     cmd_background = [
