@@ -1,0 +1,6 @@
+{
+  "check_time": "11:19",
+  "daily_summary_time": "11:20",
+  "description": "TQQQ交易策略时间配置",
+  "instructions": "修改check_time和daily_summary_time来调整交易检查时间和每日总结时间"
+} 

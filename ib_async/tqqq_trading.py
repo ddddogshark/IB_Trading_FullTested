@@ -67,12 +67,41 @@ class TQQQSmartTradingStrategy:
         self.tqqq_contract = None
         self.ema_period = 20
         self.position_percentage = 0.1  # 10%仓位
-        self.check_time = '11:12'  # 交易检查时间
-        self.daily_summary_time = '11:13'  # 每日总结时间
+        
+        # 从配置文件加载时间设置
+        self.check_time, self.daily_summary_time = self.load_time_config()
+        
         self.trading_history = []  # 交易历史记录
         self.last_email_sent_date = None  # 记录上次发送邮件的日期
         
         logging.info(f"策略初始化完成 - 主机: {host}, 端口: {port}, 客户端ID: {client_id}")
+        logging.info(f"交易时间配置 - 检查时间: {self.check_time}, 总结时间: {self.daily_summary_time}")
+    
+    def load_time_config(self):
+        """从配置文件加载时间设置"""
+        try:
+            config_file = 'trading_config.json'
+            if os.path.exists(config_file):
+                with open(config_file, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                    check_time = config.get('check_time', '11:19')
+                    daily_summary_time = config.get('daily_summary_time', '11:20')
+                    logging.info(f"从配置文件加载时间设置: {check_time}, {daily_summary_time}")
+                    return check_time, daily_summary_time
+            else:
+                # 创建默认配置文件
+                default_config = {
+                    'check_time': '11:19',
+                    'daily_summary_time': '11:20',
+                    'description': 'TQQQ交易策略时间配置'
+                }
+                with open(config_file, 'w', encoding='utf-8') as f:
+                    json.dump(default_config, f, ensure_ascii=False, indent=2)
+                logging.info(f"创建默认配置文件: {config_file}")
+                return '11:19', '11:20'
+        except Exception as e:
+            logging.error(f"加载配置文件失败: {e}, 使用默认时间设置")
+            return '11:19', '11:20'
     
     async def connect_to_ib(self):
         """连接到IB Gateway"""

@@ -33,7 +33,8 @@ def build_exe():
         '--onefile',                    # 打包成单个exe文件
         '--console',                    # 控制台应用
         '--name=TQQQ_Trading_Continuous',  # exe文件名
-        '--add-data=email_config.json;.',  # 添加配置文件
+        '--add-data=email_config.json;.',  # 添加邮件配置文件
+        '--add-data=trading_config.json;.',  # 添加交易时间配置文件
         '--add-data=ib_async/email_notifier.py;ib_async',  # 添加邮件模块
         '--add-data=ib_async/email_service.py;ib_async',   # 添加邮件服务
         '--add-data=ib_async/tqqq_trading.py;ib_async',    # 添加主策略文件
@@ -102,7 +103,10 @@ def build_exe():
             # 复制配置文件到dist目录
             if os.path.exists('email_config.json'):
                 shutil.copy2('email_config.json', 'dist/')
-                print("📋 配置文件已复制到dist目录")
+                print("📋 邮件配置文件已复制到dist目录")
+            if os.path.exists('trading_config.json'):
+                shutil.copy2('trading_config.json', 'dist/')
+                print("📋 交易时间配置文件已复制到dist目录")
             
             # 创建启动脚本
             create_startup_script()
@@ -199,6 +203,11 @@ echo 💡 使用说明:
 echo    - 按 Ctrl+C 停止策略
 echo    - 策略会自动在指定时间执行交易
 echo    - 所有交易都会发送邮件通知
+echo.
+echo ⚙️ 配置文件:
+echo    - email_config.json: 邮件配置
+echo    - trading_config.json: 交易时间配置
+echo    - 修改配置文件后重启程序生效
 echo.
 echo ========================================
 echo.
