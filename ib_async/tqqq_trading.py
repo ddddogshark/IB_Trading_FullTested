@@ -67,8 +67,8 @@ class TQQQSmartTradingStrategy:
         self.tqqq_contract = None
         self.ema_period = 20
         self.position_percentage = 0.1  # 10%仓位
-        self.check_time = '11:01'  # 交易检查时间
-        self.daily_summary_time = '11:02'  # 每日总结时间
+        self.check_time = '11:12'  # 交易检查时间
+        self.daily_summary_time = '11:13'  # 每日总结时间
         self.trading_history = []  # 交易历史记录
         self.last_email_sent_date = None  # 记录上次发送邮件的日期
         
@@ -81,7 +81,8 @@ class TQQQSmartTradingStrategy:
             self.ib = IB()
             # 使用随机客户端ID避免冲突
             import random
-            client_id = self.client_id + random.randint(1, 1000)
+            import time
+            client_id = int(time.time() * 1000) % 10000  # 使用时间戳生成唯一ID
             
             logging.info(f"正在连接IB Gateway...")
             logging.info(f"  主机: {self.host}")
