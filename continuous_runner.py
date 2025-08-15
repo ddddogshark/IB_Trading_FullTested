@@ -22,25 +22,25 @@ def main():
     """主函数 - 持续运行TQQQ交易策略"""
     try:
         # 导入主策略模块
-        from tqqq_trading import TQQQTradingStrategy
+        from tqqq_trading import TQQQSmartTradingStrategy
         
-        print("🚀 启动TQQQ智能交易策略 (持续运行模式)")
+        print("启动TQQQ智能交易策略 (持续运行模式)")
         print("=" * 60)
         
         # 创建策略实例并运行
-        strategy = TQQQTradingStrategy()
+        strategy = TQQQSmartTradingStrategy()
         
         # 直接运行持续模式
-        asyncio.run(strategy.run_continuous())
+        asyncio.run(strategy.run_strategy(continuous_mode=True))
         
     except KeyboardInterrupt:
-        print("\n🛑 用户中断，策略停止")
+        print("\n用户中断，策略停止")
     except Exception as e:
-        print(f"\n❌ 策略运行错误: {e}")
+        print(f"\n策略运行错误: {e}")
         import traceback
         traceback.print_exc()
     finally:
-        print("\n👋 策略已退出")
+        print("\n策略已退出")
 
 if __name__ == "__main__":
     main()
