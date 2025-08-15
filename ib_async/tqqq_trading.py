@@ -67,8 +67,8 @@ class TQQQSmartTradingStrategy:
         self.tqqq_contract = None
         self.ema_period = 20
         self.position_percentage = 0.1  # 10%仓位
-        self.check_time = '10:25'  # 交易检查时间
-        self.daily_summary_time = '10:26'  # 每日总结时间
+        self.check_time = '11:01'  # 交易检查时间
+        self.daily_summary_time = '11:02'  # 每日总结时间
         self.trading_history = []  # 交易历史记录
         self.last_email_sent_date = None  # 记录上次发送邮件的日期
         
